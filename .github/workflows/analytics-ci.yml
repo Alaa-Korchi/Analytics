@@ -124,7 +124,7 @@ jobs:
 
       - name: Check streamlit_app.py syntax
         run: |
-          python3 -m py_compile dashboard/streamlit_app.py
+          python3 -m py_compile dashboards/streamlit_app.py
           echo "✔ streamlit_app.py syntax OK"
 
   # ─── 5. Validate run_notebook.py syntax ──────────────────────────────────
