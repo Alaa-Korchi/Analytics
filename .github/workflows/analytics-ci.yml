@@ -140,5 +140,5 @@ jobs:
 
       - name: Check syntax
         run: |
-          python3 -m py_compile run_notebook.py
+          python3 -m py_compile scripts/run_notebook.py
           echo "✔ run_notebook.py syntax OK"
