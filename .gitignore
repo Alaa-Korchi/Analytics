@@ -10,3 +10,9 @@ data/outputs/*.csv
 reports/figures/*.png
 reports/figures/*.jpg
 reports/figures/*.html
+
+# Executed notebooks (generated locally)
+reports/executed_notebooks/*.ipynb
+
+# CSV exports (generated locally)
+reports/tables/*.csv
