@@ -149,7 +149,39 @@ The notebooks (01–04) are executed in sequence by Papermill, orchestrated as p
 
 > Generated reports are excluded from version control via `.gitignore` and recreated automatically on each Airflow run.
 
+
 ---
+
+## Dashboard Preview
+ 
+The Streamlit dashboard provides an interactive view of the price intelligence data, with filters by website and category.
+ 
+### Overview & Key Metrics
+![Dashboard overview](docs/screenshots/dashboard_overview.png)
+ 
+### Price Distribution
+Histograms of raw and log-transformed prices, illustrating the right-skewed distribution discussed in the descriptive analysis.
+![Price distribution](docs/screenshots/price_distribution.png)
+ 
+### Price Comparison by Website
+![Price comparison by website](docs/screenshots/Price_Comparison_by_Website.png)
+ 
+### Price Analysis by Category
+Median price comparison across product categories, highlighting premium computing categories.
+![Price analysis by category](docs/screenshots/Price_Analysis_by_Category.png)
+ 
+### Time-Series Price Trends
+Daily average price trends for the top categories over the observation period.
+![Time-series price trends](docs/screenshots/Time_Series_Price_Trends.png)
+ 
+### Most Volatile Products
+Products with the highest price variability over time.
+![Most volatile products](docs/screenshots/Most_Volatile_Products.png)
+ 
+> Running the dashboard locally requires a valid GCP authentication (`gcloud auth application-default login`) and access to the `price_staging` BigQuery dataset.
+ 
+---
+
 
 ##  CI/CD
 
