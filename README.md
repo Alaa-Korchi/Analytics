@@ -36,7 +36,7 @@ The main analysis is based on:
 | `02_data_quality_validation.ipynb` | Checks missing values, duplicates, invalid prices, and time-series coverage |
 | `03_descriptive_statistics.ipynb` | Computes mean, median, standard deviation, volatility, price change distribution, category trends, and time-series plots |
 | `04_inferential_statistics.ipynb` | Performs normality tests, Mann-Whitney test, Kruskal-Wallis test, post-hoc tests, regression, confidence intervals, and power analysis |
-| `05_final_insights_and_recommendations.ipynb` | Summarizes analytical findings, limitations, and business recommendations |
+| `05_final_insights_and_recommendations.ipynb` | Summarizes analytical findings, limitations |
 
 ## Main Findings
 
@@ -71,3 +71,59 @@ pip install -r requirements.txt
 
 gcloud auth application-default login
 gcloud auth application-default set-quota-project YOUR_PROJECT_ID
+
+
+##  Notebook Automation with Papermill
+
+The analytics notebooks are automatically executed using Papermill], orchestrated by Apache Airflow as part of the dbt post-transformation pipeline.
+
+### Notebooks executed (in order)
+
+| # | Notebook | Description |
+|---|----------|-------------|
+| 01 | `01_data_loading_and_understanding.ipynb` | Data loading & EDA from BigQuery |
+| 02 | `02_data_quality_validation.ipynb` | Data quality checks & validation |
+| 03 | `03_descriptive_statistics.ipynb` | Descriptive statistics & visualizations |
+| 04 | `04_inferential_statistics.ipynb` | Inferential statistics (t-test, ANOVA, regression) |
+
+### Run manually (local)
+
+```bash
+python scripts/run_notebook.py \
+  --project-id price-intel-prod \
+  --dataset-id price_staging \
+  --run-date 2026-06-11 \
+  --output-dir reports
+```
+
+### Parameters (injected by Papermill)
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `PROJECT_ID` | GCP Project ID | `price-intel-prod` |
+| `DATASET_ID` | BigQuery dataset | `price_staging` |
+| `RUN_DATE` | Execution date | today's date |
+| `OUTPUT_DIR` | Output directory | `reports` |
+
+### Output
+
+- Executed notebooks → `reports/executed_notebooks/`
+- CSV exports → `reports/tables/`
+
+> Generated files are excluded from Git via `.gitignore`.
+> They are recreated automatically at each Airflow run.
+
+
+## CI/CD
+
+The CI pipeline is defined in `.github/workflows/analytics-ci.yml` and runs on every push or pull request to `main` and `develop`.
+
+| Job | Description |
+|---|---|
+| `lint` | Checks all Python files for critical errors (syntax, undefined variables) using Flake8 |
+| `validate-imports` | Verifies that all core analytics libraries import correctly (pandas, numpy, scipy, statsmodels, scikit-learn, pingouin, plotly, matplotlib, seaborn) |
+| `validate-notebooks` | Validates that all notebooks are well-formed and parseable using nbformat |
+| `validate-streamlit` | Checks `dashboard/streamlit_app.py` for syntax errors |
+| `validate-runner` | Checks `run_notebook.py` for syntax errors |
+
+> Package versions in the CI are pinned to match `requirements.txt`. Only direct dependencies are installed — not the full frozen environment — to keep the pipeline fast and stable across runs.
