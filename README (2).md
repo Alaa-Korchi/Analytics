@@ -37,6 +37,8 @@ flowchart TD
     D3 --> E
     D4 --> E
 
+    I["Apache Airflow"] -.triggers via Papermill.-> E
+
     subgraph E["Analytics Pipeline (this repo)"]
         direction TB
         N1["01 — Data Loading & Understanding"]
@@ -49,10 +51,7 @@ flowchart TD
 
     E --> F["Executed Notebooks<br/>reports/executed_notebooks/"]
     E --> G["CSV Exports<br/>reports/tables/"]
-    F --> H["Streamlit Dashboard"]
-    G --> H
-
-    I["Apache Airflow"] -.orchestrates via Papermill.-> E
+    E --> H["Streamlit Dashboard"]
 
     style E fill:#eef5ff,stroke:#3b6fd6,stroke-width:2px
     style I fill:#fff3e0,stroke:#e08e00,stroke-width:2px
@@ -63,8 +62,8 @@ flowchart TD
 1. Product prices are scraped from Jumia Morocco and Electroplanet.
 2. Raw data lands in BigQuery (`stg_prices`).
 3. dbt transforms and models the data into `clean_prices`, `agg_prices`, `price_time_series`, and `price_intelligence`.
-4. The analytics notebooks (this repo) consume the transformed tables and produce statistical reports.
-5. Airflow triggers the notebooks via Papermill on a schedule; results feed CSV exports and a Streamlit dashboard.
+4. Apache Airflow triggers the analytics notebooks via Papermill on a schedule.
+5. Running the notebooks directly and automatically produces three outputs: executed notebooks, CSV exports, and the Streamlit dashboard.
 
 ---
 
