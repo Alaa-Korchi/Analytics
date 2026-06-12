@@ -66,35 +66,36 @@ The main analysis is based on:
 1. Create and activate a Python virtual environment.
 2. Install dependencies:
 
-```bash
+\`\`\`bash
 pip install -r requirements.txt
-
 gcloud auth application-default login
 gcloud auth application-default set-quota-project YOUR_PROJECT_ID
+\`\`\`
 
+## Notebook Automation with Papermill
 
-##  Notebook Automation with Papermill
-
-The analytics notebooks are automatically executed using Papermill], orchestrated by Apache Airflow as part of the dbt post-transformation pipeline.
+The analytics notebooks are automatically executed using Papermill, orchestrated by Apache Airflow as part of the dbt post-transformation pipeline.
 
 ### Notebooks executed (in order)
 
 | # | Notebook | Description |
 |---|----------|-------------|
-| 01 | `01_data_loading_and_understanding.ipynb` | Data loading & EDA from BigQuery |
-| 02 | `02_data_quality_validation.ipynb` | Data quality checks & validation |
-| 03 | `03_descriptive_statistics.ipynb` | Descriptive statistics & visualizations |
-| 04 | `04_inferential_statistics.ipynb` | Inferential statistics (t-test, ANOVA, regression) |
+| 01 | \`01_data_loading_and_understanding.ipynb\` | Data loading & EDA from BigQuery |
+| 02 | \`02_data_quality_validation.ipynb\` | Data quality checks & validation |
+| 03 | \`03_descriptive_statistics.ipynb\` | Descriptive statistics & visualizations |
+| 04 | \`04_inferential_statistics.ipynb\` | Inferential statistics (t-test, ANOVA, regression) |
 
 ### Run manually (local)
 
-```bash
+\`\`\`bash
 python scripts/run_notebook.py \
   --project-id price-intel-prod \
   --dataset-id price_staging \
   --run-date 2026-06-11 \
   --output-dir reports
-```
+\`\`\`
+
+
 
 ### Parameters (injected by Papermill)
 
