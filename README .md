@@ -4,7 +4,7 @@
 
 ---
 
-## 🎯 Project Overview
+##  Project Overview
 
 This module is the **analytics layer** of a larger Real-Time E-commerce Price Intelligence Platform. Raw product data is scraped, ingested, and transformed upstream (via dbt) into clean BigQuery tables. This repository takes those transformed tables and turns them into **statistical insights and business recommendations** through a sequence of five Jupyter notebooks, automatically executed with Papermill and orchestrated by Apache Airflow.
 
@@ -20,7 +20,7 @@ This module is the **analytics layer** of a larger Real-Time E-commerce Price In
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```mermaid
 flowchart TD
@@ -67,7 +67,21 @@ flowchart TD
 
 ---
 
-## 📓 Notebook Pipeline
+##  Data Sources (BigQuery — `price_staging` dataset)
+
+| Table | Description |
+|---|---|
+| `stg_prices` | Raw staging table |
+| `clean_prices` | Cleaned product price observations (main analysis table) |
+| `agg_prices` | Aggregated product-level price metrics |
+| `price_time_series` | Time-series product price observations |
+| `price_intelligence` | Latest product-level price intelligence view |
+
+---
+
+---
+
+##  Notebook Pipeline
 
 | # | Notebook | Purpose |
 |---|---|---|
@@ -79,7 +93,7 @@ flowchart TD
 
 ---
 
-## 📈 Key Findings
+##  Key Findings
 
 - **Price distribution is highly right-skewed**: mean ≈ 1,801.67 MAD vs. median ≈ 979 MAD, driven by high-end electronics (gaming PCs, MacBooks, ultrabooks).
 - **Strong dispersion**: standard deviation ≈ 2,971.10 MAD; prices range from 15 MAD to 39,999 MAD.
@@ -91,7 +105,7 @@ flowchart TD
 
 ---
 
-## ⚠️ Limitations
+##  Limitations
 
 - **Sample imbalance**: far more observations from Jumia Morocco than from Electroplanet.
 - **Catalog mismatch**: the two platforms don't sell identical product lines, so cross-site comparisons may reflect product mix as much as pricing strategy.
@@ -100,7 +114,7 @@ flowchart TD
 
 ---
 
-## 🔬 Statistical Methods Used
+##  Statistical Methods Used
 
 | Category | Methods |
 |---|---|
@@ -116,7 +130,44 @@ flowchart TD
 
 ---
 
-## ⚙️ Setup & Usage
+
+
+## Automated execution (Papermill + Airflow) 
+
+The notebooks (01–04) are executed in sequence by Papermill, orchestrated as part of the dbt post-transformation pipeline in Apache Airflow.
+
+| Parameter | Description | Default |
+|---|---|---|
+| `PROJECT_ID` | GCP Project ID | `your-project-id` |
+| `DATASET_ID` | BigQuery dataset | `price_staging` |
+| `RUN_DATE` | Execution date | today's date |
+| `OUTPUT_DIR` | Output directory | `reports` |
+
+**Outputs:**
+- Executed notebooks → `reports/executed_notebooks/`
+- CSV exports → `reports/tables/`
+
+> Generated reports are excluded from version control via `.gitignore` and recreated automatically on each Airflow run.
+
+---
+
+##  CI/CD
+
+Defined in `.github/workflows/analytics-ci.yml`, runs on every push/PR to `main` and `develop`:
+
+| Job | Description |
+|---|---|
+| `lint` | Flake8 checks for syntax errors and undefined variables |
+| `validate-imports` | Confirms core libraries import correctly (pandas, numpy, scipy, statsmodels, scikit-learn, pingouin, plotly, matplotlib, seaborn) |
+| `validate-notebooks` | Validates notebook structure via `nbformat` |
+| `validate-streamlit` | Syntax check on `dashboard/streamlit_app.py` |
+| `validate-runner` | Syntax check on `run_notebook.py` |
+
+> Dependency versions are pinned to `requirements.txt`. Only direct dependencies are installed to keep the pipeline fast and stable.
+
+---
+
+##  Setup & Usage
 
 ### 1. Environment setup
 
@@ -142,54 +193,9 @@ python scripts/run_notebook.py \
   --run-date 2026-06-11 \
   --output-dir reports
 ```
-
-### 4. Automated execution (Papermill + Airflow)
-
-The notebooks (01–04) are executed in sequence by Papermill, orchestrated as part of the dbt post-transformation pipeline in Apache Airflow.
-
-| Parameter | Description | Default |
-|---|---|---|
-| `PROJECT_ID` | GCP Project ID | `your-project-id` |
-| `DATASET_ID` | BigQuery dataset | `price_staging` |
-| `RUN_DATE` | Execution date | today's date |
-| `OUTPUT_DIR` | Output directory | `reports` |
-
-**Outputs:**
-- Executed notebooks → `reports/executed_notebooks/`
-- CSV exports → `reports/tables/`
-
-> ℹ️ Generated reports are excluded from version control via `.gitignore` and recreated automatically on each Airflow run.
-
 ---
 
-## ✅ CI/CD
-
-Defined in `.github/workflows/analytics-ci.yml`, runs on every push/PR to `main` and `develop`:
-
-| Job | Description |
-|---|---|
-| `lint` | Flake8 checks for syntax errors and undefined variables |
-| `validate-imports` | Confirms core libraries import correctly (pandas, numpy, scipy, statsmodels, scikit-learn, pingouin, plotly, matplotlib, seaborn) |
-| `validate-notebooks` | Validates notebook structure via `nbformat` |
-| `validate-streamlit` | Syntax check on `dashboard/streamlit_app.py` |
-| `validate-runner` | Syntax check on `run_notebook.py` |
-
-> Dependency versions are pinned to `requirements.txt`. Only direct dependencies are installed to keep the pipeline fast and stable.
-
----
-
-## 📂 Data Sources (BigQuery — `price_staging` dataset)
-
-| Table | Description |
-|---|---|
-| `stg_prices` | Raw staging table |
-| `clean_prices` | Cleaned product price observations (main analysis table) |
-| `agg_prices` | Aggregated product-level price metrics |
-| `price_time_series` | Time-series product price observations |
-| `price_intelligence` | Latest product-level price intelligence view |
-
----
-
-## 🛠️ Tech Stack
+##  Tech Stack
 
 `Python` · `pandas` / `numpy` · `scipy` / `statsmodels` / `pingouin` · `scikit-learn` · `matplotlib` / `seaborn` / `plotly` · `BigQuery` · `dbt` · `Apache Airflow` · `Papermill` · `Streamlit`
+ 
